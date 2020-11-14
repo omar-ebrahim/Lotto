@@ -1,13 +1,13 @@
 ﻿using Lotto.Checker;
 using Lotto.Selection;
 using System;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Lotto
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var userSelection = new LottoSelection();
             var ballSelectionMessage = $"Enter {LottoSelection.BallCount} ball numbers between 1 and 50, separated by a comma";
@@ -53,24 +53,10 @@ namespace Lotto
             }
             var attempts = int.Parse(numOfTimes);
 
-            var results = new List<LottoSelection>();
-
-            for (var i = 0; i < attempts; i++)
-            {
-                results.Add(LottoSelector.GenerateSelection());
-            }
-
+            var test = new ResultGenerator();
+            var results = await test.GenerateResults(attempts);
             var win = LottoChecker.CheckResults(userSelection, results);
             
-            //foreach(var result in results)
-            //{
-            //    Console.WriteLine("--------------------------------------------------------------");
-            //    Console.WriteLine("--------------------------------------------------------------");
-            //    Console.WriteLine(result);
-            //    Console.WriteLine("--------------------------------------------------------------");
-            //    Console.WriteLine("--------------------------------------------------------------");
-            //}
-
             var winString = win ? "won" : "didn't win";
 
             Console.WriteLine($"Out of {string.Format("{0:n0}", attempts)} attempts, you {winString} the jackpot.");
