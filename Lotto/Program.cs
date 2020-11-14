@@ -10,39 +10,49 @@ namespace Lotto
         static async Task Main(string[] args)
         {
             var userSelection = new LottoSelection();
-            var ballSelectionMessage = $"Enter {LottoSelection.BallCount} ball numbers between 1 and 50, separated by a comma";
+            var ballSelectionMessage = $"Enter {LottoSelection.BallCount} ball numbers between 1 and 50, separated by a comma, or simply press ENTER key for lucky dip";
             var powerBallSelectionMessage = $"Enter {LottoSelection.PowerBallCount} powerball numbers between 1 and 8, separated by a comma";
 
             Console.WriteLine(ballSelectionMessage);
 
-            var ballNumbers = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
+            var firstInput = Console.ReadLine();
 
-            while (!InputValidator.TryValidateInput(ballNumbers, LottoSelection.BallCount, 50, out string error))
+            if (string.IsNullOrWhiteSpace(firstInput))
             {
-                Console.WriteLine(error);
-                Console.WriteLine(ballSelectionMessage);
-                ballNumbers = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
+                userSelection = LottoSelector.GenerateSelection();
+                Console.WriteLine(userSelection);
             }
-
-            userSelection.Balls[0] = int.Parse(ballNumbers[0]);
-            userSelection.Balls[1] = int.Parse(ballNumbers[1]);
-            userSelection.Balls[2] = int.Parse(ballNumbers[2]);
-            userSelection.Balls[3] = int.Parse(ballNumbers[3]);
-            userSelection.Balls[4] = int.Parse(ballNumbers[4]);
-
-            Console.WriteLine(powerBallSelectionMessage);
-
-            var powerballNumbers = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-            while (!InputValidator.TryValidateInput(powerballNumbers, 2, 8, out string error))
+            else
             {
-                Console.WriteLine(error);
+                var ballNumbers = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
+                while (!InputValidator.TryValidateInput(ballNumbers, LottoSelection.BallCount, 50, out string error))
+                {
+                    Console.WriteLine(error);
+                    Console.WriteLine(ballSelectionMessage);
+                    ballNumbers = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
+                }
+
+                userSelection.Balls[0] = int.Parse(ballNumbers[0]);
+                userSelection.Balls[1] = int.Parse(ballNumbers[1]);
+                userSelection.Balls[2] = int.Parse(ballNumbers[2]);
+                userSelection.Balls[3] = int.Parse(ballNumbers[3]);
+                userSelection.Balls[4] = int.Parse(ballNumbers[4]);
+
                 Console.WriteLine(powerBallSelectionMessage);
-                powerballNumbers = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
-            }
 
-            userSelection.PowerBalls[0] = int.Parse(powerballNumbers[0]);
-            userSelection.PowerBalls[1] = int.Parse(powerballNumbers[1]);
+                var powerballNumbers = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+                while (!InputValidator.TryValidateInput(powerballNumbers, 2, 8, out string error))
+                {
+                    Console.WriteLine(error);
+                    Console.WriteLine(powerBallSelectionMessage);
+                    powerballNumbers = Console.ReadLine().Split(',', StringSplitOptions.RemoveEmptyEntries);
+                }
+
+                userSelection.PowerBalls[0] = int.Parse(powerballNumbers[0]);
+                userSelection.PowerBalls[1] = int.Parse(powerballNumbers[1]);
+
+            }
 
             Console.WriteLine("Now enter the number of attempts you would like to try");
             var numOfTimes = Console.ReadLine().Trim();
